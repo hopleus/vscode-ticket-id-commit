@@ -11,6 +11,7 @@ test/**
 **/*.ts
 *.vsix
 .gitignore
+CONTRIBUTING.md
 esbuild.mjs
 eslint.config.mjs
 tsconfig.json

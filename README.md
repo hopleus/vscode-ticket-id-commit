@@ -148,15 +148,7 @@ Requires VS Code 1.90 or newer with the built-in Git extension enabled.
 
 ## Development
 
-```sh
-npm ci
-npm test         # unit tests
-npm run lint     # ESLint
-npm run build    # type check and bundle into dist/extension.js
-npm run icons    # rebuild resources/ticket-id-icons.woff and resources/icon.png from resources/icons/*.svg
-```
-
-Press **F5** in VS Code to start an Extension Development Host.
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Credits
 
