@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.1] - 2026-10-15
+
+### Fixed
+
+- The extension no longer requires the built-in Git extension to be enabled: it also works with [Git Plus](https://github.com/hopleus/vscode-git-plus) installed in its place.
+
 ## [0.1.0] - 2026-10-15
 
 ### Added

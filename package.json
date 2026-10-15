@@ -2,7 +2,7 @@
   "name": "ticket-id-commit-message",
   "displayName": "Ticket ID Commit Message",
   "description": "Adds the ticket ID from your branch name (Jira, YouTrack, Linear…) to your commit message.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "hopleus",
   "license": "MIT",
   "icon": "resources/icon.png",
@@ -40,9 +40,6 @@
   ],
   "activationEvents": [
     "onStartupFinished"
-  ],
-  "extensionDependencies": [
-    "vscode.git"
   ],
   "main": "./dist/extension.js",
   "contributes": {

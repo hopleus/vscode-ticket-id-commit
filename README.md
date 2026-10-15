@@ -134,17 +134,15 @@ Logs are in the **Ticket ID Commit Message** output channel.
 
 ## Installation
 
-Build the extension and install the `.vsix`:
+Download `ticket-id-commit-message-<version>.vsix` from the latest [GitHub release](https://github.com/hopleus/vscode-ticket-id-commit/releases/latest) and install it:
 
 ```sh
-npm ci
-npm run package
-code --install-extension ticket-id-commit-message-0.1.0.vsix
+code --install-extension ticket-id-commit-message-<version>.vsix
 ```
 
 Or in VS Code: **Extensions** view → **…** → **Install from VSIX…**
 
-Requires VS Code 1.90 or newer with the built-in Git extension enabled.
+Requires VS Code 1.90 or newer with the built-in Git extension enabled, or [Git Plus](https://github.com/hopleus/vscode-git-plus) installed in its place.
 
 ## Development
 

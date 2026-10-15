@@ -7,6 +7,7 @@ import { readSettings, SECTION } from './settings';
 
 const INSERT_COMMAND = 'ticketIdCommitMessage.insert';
 const OPEN_SETTINGS = 'Open Settings';
+const GIT_EXTENSION_IDS = ['vscode.git', 'hopleus.vscode-git-plus'];
 const CONNECT_ATTEMPTS = 10;
 const CONNECT_RETRY_MS = 100;
 
@@ -184,7 +185,7 @@ function scmInputRoot(uri: vscode.Uri): vscode.Uri | undefined {
   return root ? vscode.Uri.parse(root) : undefined;
 }
 
-export async function activate(context: vscode.ExtensionContext): Promise<void> {
+export function activate(context: vscode.ExtensionContext): void {
   const log = vscode.window.createOutputChannel('Ticket ID Commit Message', { log: true });
   const controller = new Controller(log);
   context.subscriptions.push(
@@ -196,12 +197,45 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     }),
   );
 
-  const gitExtension = vscode.extensions.getExtension<GitExtension>('vscode.git');
-  if (!gitExtension) {
-    log.error('Built-in Git extension (vscode.git) not found.');
+  const start = (extension: vscode.Extension<GitExtension>): void => {
+    useGitExtension(extension, controller, log, context).catch((error: unknown) => {
+      log.error(`Failed to activate ${extension.id}`, error instanceof Error ? error : String(error));
+    });
+  };
+  const gitExtension = findGitExtension();
+  if (gitExtension) {
+    start(gitExtension);
     return;
   }
-  const git = gitExtension.isActive ? gitExtension.exports : await gitExtension.activate();
+  log.warn(`No Git extension found (${GIT_EXTENSION_IDS.join(', ')}), waiting for one to be enabled`);
+  const subscription = vscode.extensions.onDidChange(() => {
+    const found = findGitExtension();
+    if (found) {
+      subscription.dispose();
+      start(found);
+    }
+  });
+  context.subscriptions.push(subscription);
+}
+
+function findGitExtension(): vscode.Extension<GitExtension> | undefined {
+  for (const id of GIT_EXTENSION_IDS) {
+    const extension = vscode.extensions.getExtension<GitExtension>(id);
+    if (extension) {
+      return extension;
+    }
+  }
+  return undefined;
+}
+
+async function useGitExtension(
+  extension: vscode.Extension<GitExtension>,
+  controller: Controller,
+  log: vscode.LogOutputChannel,
+  context: vscode.ExtensionContext,
+): Promise<void> {
+  log.info(`Using the Git API of ${extension.id}`);
+  const git = extension.isActive ? extension.exports : await extension.activate();
   const connect = (attempt = 1): void => {
     try {
       controller.connect(git.getAPI(1));
