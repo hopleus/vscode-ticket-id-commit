@@ -1,0 +1,245 @@
+{
+  "name": "ticket-id-commit-message",
+  "displayName": "Ticket ID Commit Message",
+  "description": "Adds the ticket ID from your branch name (Jira, YouTrack, Linear…) to your commit message.",
+  "version": "0.1.0",
+  "publisher": "hopleus",
+  "license": "MIT",
+  "icon": "resources/icon.png",
+  "galleryBanner": {
+    "color": "#1E293B",
+    "theme": "dark"
+  },
+  "author": "hopleus",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hopleus/vscode-ticket-id-commit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hopleus/vscode-ticket-id-commit/issues"
+  },
+  "homepage": "https://github.com/hopleus/vscode-ticket-id-commit#readme",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "SCM Providers",
+    "Other"
+  ],
+  "keywords": [
+    "jira",
+    "youtrack",
+    "linear",
+    "ticket",
+    "issue",
+    "branch",
+    "commit",
+    "commit message",
+    "conventional commits",
+    "git"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "extensionDependencies": [
+    "vscode.git"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "icons": {
+      "ticket-id-commit-message-ticket": {
+        "description": "Ticket icon of the Insert Ticket ID command",
+        "default": {
+          "fontPath": "resources/ticket-id-icons.woff",
+          "fontCharacter": "\\E001"
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "ticketIdCommitMessage.insert",
+        "title": "Insert Ticket ID",
+        "category": "Ticket ID",
+        "icon": "$(ticket-id-commit-message-ticket)"
+      }
+    ],
+    "menus": {
+      "scm/title": [
+        {
+          "command": "ticketIdCommitMessage.insert",
+          "group": "navigation",
+          "when": "scmProvider == git"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "ticketIdCommitMessage.insert",
+          "when": "gitOpenRepositoryCount != 0"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "ticketIdCommitMessage.insert",
+        "key": "ctrl+alt+j",
+        "mac": "cmd+alt+j",
+        "when": "gitOpenRepositoryCount != 0 && !notebookEditorFocused"
+      }
+    ],
+    "configuration": {
+      "title": "Ticket ID Commit Message",
+      "properties": {
+        "ticketIdCommitMessage.autoDetectProjectKey": {
+          "order": 0,
+          "type": "boolean",
+          "default": true,
+          "scope": "resource",
+          "markdownDescription": "Automatically detect any ticket key in the branch name (e.g. `feature/PROJ-123-login` → `PROJ-123`). When disabled, only keys listed in `#ticketIdCommitMessage.projectKeys#` are recognized."
+        },
+        "ticketIdCommitMessage.projectKeys": {
+          "order": 1,
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "scope": "resource",
+          "markdownDescription": "Project keys to look for when `#ticketIdCommitMessage.autoDetectProjectKey#` is off, e.g. `PROJ`, `LEGOS`. Matching is case-insensitive; the key is inserted in uppercase. The first key found in the branch wins."
+        },
+        "ticketIdCommitMessage.conventionalCommit": {
+          "order": 2,
+          "type": "boolean",
+          "default": false,
+          "scope": "resource",
+          "markdownDescription": "Take the [Conventional Commits](https://www.conventionalcommits.org) type from the start of the branch name: `feat/PROJ-123-login` → `feat(PROJ-123): `. Recognized types: `feat`, `fix`, `build`, `ci`, `chore`, `docs`, `perf`, `refactor`, `style`, `test`."
+        },
+        "ticketIdCommitMessage.wrapper": {
+          "order": 3,
+          "type": "string",
+          "default": "()",
+          "scope": "resource",
+          "enum": [
+            "none",
+            "()",
+            "{}",
+            "[]",
+            "<>",
+            "**",
+            "//",
+            "\\\\",
+            "||"
+          ],
+          "enumItemLabels": [
+            "No wrapper",
+            "(PROJ-123)",
+            "{PROJ-123}",
+            "[PROJ-123]",
+            "<PROJ-123>",
+            "*PROJ-123*",
+            "/PROJ-123/",
+            "\\PROJ-123\\",
+            "|PROJ-123|"
+          ],
+          "enumDescriptions": [
+            "PROJ-123",
+            "(PROJ-123)",
+            "{PROJ-123}",
+            "[PROJ-123]",
+            "<PROJ-123>",
+            "*PROJ-123*",
+            "/PROJ-123/",
+            "\\PROJ-123\\",
+            "|PROJ-123|"
+          ],
+          "markdownDescription": "Characters that enclose the ticket ID."
+        },
+        "ticketIdCommitMessage.prefix": {
+          "order": 4,
+          "type": "string",
+          "default": "none",
+          "scope": "resource",
+          "enum": [
+            "none",
+            "-",
+            ":",
+            "#"
+          ],
+          "enumItemLabels": [
+            "No prefix",
+            "-PROJ-123",
+            ":PROJ-123",
+            "#PROJ-123"
+          ],
+          "enumDescriptions": [
+            "(PROJ-123)",
+            "-(PROJ-123)",
+            ":(PROJ-123)",
+            "#(PROJ-123)"
+          ],
+          "markdownDescription": "Text added before the (wrapped) ticket ID."
+        },
+        "ticketIdCommitMessage.infix": {
+          "order": 5,
+          "type": "string",
+          "default": "none",
+          "scope": "resource",
+          "enum": [
+            "none",
+            "-",
+            " -",
+            ":",
+            " :"
+          ],
+          "enumItemLabels": [
+            "No infix",
+            "PROJ-123-",
+            "PROJ-123 -",
+            "PROJ-123:",
+            "PROJ-123 :"
+          ],
+          "enumDescriptions": [
+            "(PROJ-123) message",
+            "(PROJ-123)- message",
+            "(PROJ-123) - message",
+            "(PROJ-123): message",
+            "(PROJ-123) : message"
+          ],
+          "markdownDescription": "Text added after the (wrapped) ticket ID, between it and your message."
+        },
+        "ticketIdCommitMessage.prependOnActionClick": {
+          "order": 6,
+          "type": "boolean",
+          "default": false,
+          "scope": "resource",
+          "markdownDescription": "When running **Insert Ticket ID** (toolbar button or `Cmd/Ctrl+Alt+J`), keep the text already in the commit box and only add or replace the ticket prefix. When off, the whole box is replaced with the prefix."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "compile": "node esbuild.mjs",
+    "build": "tsc --noEmit && node esbuild.mjs --production",
+    "watch": "node esbuild.mjs --watch",
+    "typecheck": "tsc --noEmit",
+    "icons": "node scripts/build-icons.mjs",
+    "lint": "eslint src test",
+    "test": "vitest run",
+    "package": "vsce package --no-dependencies"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@resvg/resvg-js": "^2.6.2",
+    "@types/node": "^22.20.5",
+    "@types/vscode": "~1.90.0",
+    "@vscode/vsce": "^4.0.0",
+    "esbuild": "^0.28.2",
+    "eslint": "^10.12.0",
+    "svg2ttf": "^6.1.0",
+    "svgpath": "^2.6.0",
+    "ttf2woff": "^3.0.0",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.71.2",
+    "vitest": "^5.0.4"
+  }
+}
